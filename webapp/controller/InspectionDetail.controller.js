@@ -116,30 +116,31 @@ sap.ui.define([
             var oModel = this.getView().getModel("inspectionModel");
             var sPath = oContext.getPath();
 
-            // Perform update
+            // Prepare update payload
             var oUpdateData = {
                 UnrestrictedQuantity: oContext.getProperty("UnrestrictedQuantity"),
                 BlockedQuantity: oContext.getProperty("BlockedQuantity"),
-                ProductionQuantity: oContext.getProperty("ProductionQuantity")
+                ProductionQuantity: oContext.getProperty("ProductionQuantity"),
+                // Ensure UsageDecisionCode is strictly sent. 
+                // If partial, use current value (likely 'PENDING'); if final, use new decision.
+                UsageDecisionCode: bIsPartial ? oContext.getProperty("UsageDecisionCode") : sDecision
             };
-
-            // Should we update decision code?
-            // If partial, keep as is (PENDING), usually we just don't send it or send PENDING.
-            // If final, send new status.
-            if (!bIsPartial) {
-                oUpdateData.UsageDecisionCode = sDecision;
-            }
 
             oModel.update(sPath, oUpdateData, {
                 success: function () {
-                    MessageToast.show(bIsPartial ? "Results Saved (Partial)" : "Decision Saved Successfully");
+                    MessageToast.show(bIsPartial ? "Record Saved Successfully" : "Decision Saved Successfully");
                     this._updateUIState();
                     if (!bIsPartial) {
-                        // Optional: Navigate back or stay
+                        this.onNavBack();
                     }
                 }.bind(this),
                 error: function (oError) {
-                    MessageBox.error("Error saving data.");
+                    try {
+                        var sMsg = JSON.parse(oError.responseText).error.message.value;
+                        MessageBox.error("Error: " + sMsg);
+                    } catch (e) {
+                        MessageBox.error("Error saving data. Please check connection or backend logs.");
+                    }
                 }
             });
         },
