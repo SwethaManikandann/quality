@@ -11,14 +11,14 @@
         "description": "{{appDescription}}",
         "dataSources": {
             "loginService": {
-                "uri": "http://AZKTLDS5CP.kcloud.com:8000/sap/opu/odata/sap/ZDD_SM_QP_CDS/",
+                "uri": "/sap/opu/odata/sap/ZDD_SM_QP_CDS/",
                 "type": "OData",
                 "settings": {
                     "odataVersion": "2.0"
                 }
             },
             "inspectionService": {
-                "uri": "http://AZKTLDS5CP.kcloud.com:8000/sap/opu/odata/sap/ZDD_SM_QP_INSPECTION_CDS/",
+                "uri": "/sap/opu/odata/sap/ZDD_SM_QP_INSPECTION_CDS/",
                 "type": "OData",
                 "settings": {
                     "odataVersion": "2.0"

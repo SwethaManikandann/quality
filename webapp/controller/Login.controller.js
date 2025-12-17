@@ -23,11 +23,6 @@ sap.ui.define([
 
             BusyIndicator.show(0);
 
-            // Construct the Basic Auth header for the Service User (K901806)
-            // Ideally this should be handled by a destination or proxy. 
-            // Encoding credentials: K901806:M$wetha@1591
-            var sServiceAuth = "Basic " + btoa("K901806:M$wetha@1591");
-
             var oModel = this.getView().getModel("loginModel");
             var aFilters = [
                 new Filter("username", FilterOperator.EQ, sUsername),
@@ -37,9 +32,6 @@ sap.ui.define([
             // Perform manual read to validate credentials
             oModel.read("/ZDD_SM_QP", {
                 filters: aFilters,
-                headers: {
-                    "Authorization": sServiceAuth
-                },
                 success: function (oData) {
                     BusyIndicator.hide();
                     // Check if any record matches
