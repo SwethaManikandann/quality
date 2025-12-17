@@ -98,6 +98,11 @@
                     "pattern": "dashboard",
                     "name": "dashboard",
                     "target": "Dashboard"
+                },
+                {
+                    "pattern": "inspection/{inspectionPath}",
+                    "name": "inspection",
+                    "target": "InspectionDetail"
                 }
             ],
             "targets": {
@@ -108,6 +113,10 @@
                 "Dashboard": {
                     "viewName": "Dashboard",
                     "viewId": "dashboard"
+                },
+                "InspectionDetail": {
+                    "viewName": "InspectionDetail",
+                    "viewId": "inspectionDetail"
                 }
             }
         }

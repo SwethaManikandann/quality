@@ -28,6 +28,17 @@ sap.ui.define([
 
         onLogout: function () {
             this.getOwnerComponent().getRouter().navTo("login");
+        },
+
+        onItemPress: function (oEvent) {
+            var oItem = oEvent.getSource();
+            var oContext = oItem.getBindingContext("inspectionModel");
+            // Extract plain ID or use path. Using path (relative, e.g., /ZDD_SM_QP_INSPECTION('...') ) is safer.
+            var sPath = oContext.getPath().substr(1); // Remove leading slash
+
+            this.getOwnerComponent().getRouter().navTo("inspection", {
+                inspectionPath: sPath
+            });
         }
     });
 });

@@ -1,0 +1,105 @@
+<mvc:View
+    controllerName="com.kaar.qualityportal.controller.InspectionDetail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
+    <Page id="inspectionPage" title="Inspection Lot Detail" showNavButton="true" navButtonPress=".onNavBack">
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <ObjectHeader
+                    title="{inspectionModel>InspectionLot}"
+                    number="{inspectionModel>LotQuantity}"
+                    numberUnit="{inspectionModel>UoM}"
+                    intro="Material: {inspectionModel>MaterialNumber}">
+                    <attributes>
+                        <ObjectAttribute title="Plant" text="{inspectionModel>Plant}"/>
+                        <ObjectAttribute title="Inspection Type" text="{inspectionModel>InspectionType}"/>
+                        <ObjectAttribute title="Decision" text="{
+                            path: 'inspectionModel>UsageDecisionCode',
+                            formatter: '.formatter.statusText'
+                        }"/>
+                    </attributes>
+                    <statuses>
+                        <ObjectStatus
+                            text="{
+                                path: 'inspectionModel>UsageDecisionCode',
+                                formatter: '.formatter.statusText'
+                            }"
+                            state="{
+                                path: 'inspectionModel>UsageDecisionCode',
+                                formatter: '.formatter.statusState'
+                            }"
+                        />
+                    </statuses>
+                </ObjectHeader>
+
+                <f:SimpleForm editable="true" layout="ResponsiveGridLayout" title="Result Recording">
+                    <f:content>
+                        <Label text="Unrestricted Stock" />
+                        <Input 
+                            value="{
+                                path: 'inspectionModel>UnrestrictedQuantity',
+                                type: 'sap.ui.model.type.Float'
+                            }" 
+                            enabled="{viewModel>/isEditable}"
+                            liveChange=".onLiveChange"
+                            description="{inspectionModel>UoM}"/>
+
+                        <Label text="Blocked Stock" />
+                        <Input 
+                            value="{
+                                path: 'inspectionModel>BlockedQuantity',
+                                type: 'sap.ui.model.type.Float'
+                            }" 
+                            enabled="{viewModel>/isEditable}"
+                            liveChange=".onLiveChange"
+                            description="{inspectionModel>UoM}"/>
+
+                        <Label text="Production Stock" />
+                        <Input 
+                            value="{
+                                path: 'inspectionModel>ProductionQuantity',
+                                type: 'sap.ui.model.type.Float'
+                            }" 
+                            enabled="{viewModel>/isEditable}"
+                            liveChange=".onLiveChange"
+                            description="{inspectionModel>UoM}"/>
+
+                        <Label text="Quality Summary" />
+                        <Text 
+                            text="{viewModel>/totalRecorded} / {inspectionModel>LotQuantity}" 
+                            textAlign="Center"
+                             class="sapUiTinyMarginTop"/>
+                        <Label text="" />
+                        <ObjectStatus
+                            text="{viewModel>/qtyStateText}"
+                            state="{viewModel>/qtyState}"
+                        />
+                    </f:content>
+                </f:SimpleForm>
+            </VBox>
+        </content>
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer/>
+                <Button 
+                    text="Save" 
+                    type="Emphasized" 
+                    press=".onSave" 
+                    enabled="{viewModel>/isEditable}"/>
+                <Button 
+                    text="Approve" 
+                    type="Accept" 
+                    press=".onApprove" 
+                    enabled="{= ${viewModel>/isEditable} &amp;&amp; ${viewModel>/qtyState} === 'Success' }"/>
+                <Button 
+                    text="Reject" 
+                    type="Reject" 
+                    press=".onReject" 
+                    enabled="{= ${viewModel>/isEditable} &amp;&amp; ${viewModel>/qtyState} === 'Success' }"/>
+            </OverflowToolbar>
+        </footer>
+    </Page>
+</mvc:View>
