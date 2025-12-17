@@ -40,7 +40,7 @@
                         <Label text="Unrestricted Stock" />
                         <Input 
                             value="{
-                                path: 'inspectionModel>UnrestrictedQuantity',
+                                path: 'viewModel>/UnrestrictedQuantity',
                                 type: 'sap.ui.model.type.Float'
                             }" 
                             enabled="{viewModel>/isEditable}"
@@ -50,7 +50,7 @@
                         <Label text="Blocked Stock" />
                         <Input 
                             value="{
-                                path: 'inspectionModel>BlockedQuantity',
+                                path: 'viewModel>/BlockedQuantity',
                                 type: 'sap.ui.model.type.Float'
                             }" 
                             enabled="{viewModel>/isEditable}"
@@ -60,7 +60,7 @@
                         <Label text="Production Stock" />
                         <Input 
                             value="{
-                                path: 'inspectionModel>ProductionQuantity',
+                                path: 'viewModel>/ProductionQuantity',
                                 type: 'sap.ui.model.type.Float'
                             }" 
                             enabled="{viewModel>/isEditable}"

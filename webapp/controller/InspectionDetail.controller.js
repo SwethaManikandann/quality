@@ -52,6 +52,22 @@ sap.ui.define([
 
             oViewModel.setProperty("/isEditable", bIsPending);
 
+            // Load Local Data if exists, otherwise use OData
+            var sLotId = oData.InspectionLot; // Assuming ID is available
+            var sStorageKey = "quality_portal_" + sLotId;
+            var sLocalData = localStorage.getItem(sStorageKey);
+
+            if (sLocalData) {
+                var oLocal = JSON.parse(sLocalData);
+                oViewModel.setProperty("/UnrestrictedQuantity", oLocal.UnrestrictedQuantity);
+                oViewModel.setProperty("/BlockedQuantity", oLocal.BlockedQuantity);
+                oViewModel.setProperty("/ProductionQuantity", oLocal.ProductionQuantity);
+            } else {
+                oViewModel.setProperty("/UnrestrictedQuantity", parseFloat(oData.UnrestrictedQuantity) || 0);
+                oViewModel.setProperty("/BlockedQuantity", parseFloat(oData.BlockedQuantity) || 0);
+                oViewModel.setProperty("/ProductionQuantity", parseFloat(oData.ProductionQuantity) || 0);
+            }
+
             this.onLiveChange(); // Re-validate totals
         },
 
@@ -59,20 +75,15 @@ sap.ui.define([
             var oContext = this.getView().getBindingContext("inspectionModel");
             if (!oContext) return;
 
-            // Get values (Assuming properties exist, if not they default to undefined/0 during sum if handled)
-            // Note: Since these might not exist in backend metadata yet, app might fail to save, 
-            // but we implement the logic as requested using standard-ish fields or custom fields the user assumes exist.
-            // Using logical names: UnrestrictedQuantity, BlockedQuantity, ProductionQuantity
-            // If these fail, check metadata.
+            var oViewModel = this.getView().getModel("viewModel");
 
-            var iUnrestricted = parseFloat(oContext.getProperty("UnrestrictedQuantity")) || 0;
-            var iBlocked = parseFloat(oContext.getProperty("BlockedQuantity")) || 0;
-            var iProduction = parseFloat(oContext.getProperty("ProductionQuantity")) || 0;
+            var iUnrestricted = parseFloat(oViewModel.getProperty("/UnrestrictedQuantity")) || 0;
+            var iBlocked = parseFloat(oViewModel.getProperty("/BlockedQuantity")) || 0;
+            var iProduction = parseFloat(oViewModel.getProperty("/ProductionQuantity")) || 0;
 
             var iTotal = iUnrestricted + iBlocked + iProduction;
             var iLotQty = parseFloat(oContext.getProperty("LotQuantity")) || 0;
 
-            var oViewModel = this.getView().getModel("viewModel");
             oViewModel.setProperty("/totalRecorded", iTotal);
 
             if (iTotal === iLotQty) {
@@ -88,13 +99,26 @@ sap.ui.define([
         },
 
         onSave: function () {
-            // Save current values without changing decision (Partial Save)
-            // No quantity validation required for partial save
-            this._submitDecision(null, true);
+            // Local Save Only
+            var oViewModel = this.getView().getModel("viewModel");
+            var oContext = this.getView().getBindingContext("inspectionModel");
+
+            var oDataToSave = {
+                UnrestrictedQuantity: oViewModel.getProperty("/UnrestrictedQuantity"),
+                BlockedQuantity: oViewModel.getProperty("/BlockedQuantity"),
+                ProductionQuantity: oViewModel.getProperty("/ProductionQuantity")
+            };
+
+            var sLotId = oContext.getProperty("InspectionLot");
+            var sStorageKey = "quality_portal_" + sLotId;
+
+            localStorage.setItem(sStorageKey, JSON.stringify(oDataToSave));
+
+            MessageToast.show("Record Saved Successfully");
         },
 
         onApprove: function () {
-            this._submitDecision("A", false);
+            this._submitDecision("A");
         },
 
         onReject: function () {
@@ -102,13 +126,15 @@ sap.ui.define([
         },
 
         _submitDecision: function (sDecision, bIsPartial) {
+            // This method is now only for FINAL DECISION (Approve/Reject)
+            // Partial Save is handled by onSave locally.
+
             var oViewModel = this.getView().getModel("viewModel");
             var oContext = this.getView().getBindingContext("inspectionModel");
             var iLotQty = parseFloat(oContext.getProperty("LotQuantity"));
             var iTotal = oViewModel.getProperty("/totalRecorded");
 
-            // Validation only for Final Decision
-            if (!bIsPartial && iTotal !== iLotQty) {
+            if (iTotal !== iLotQty) {
                 MessageBox.error("Cannot submit decision. Total recorded quantity must match Lot Quantity.");
                 return;
             }
@@ -116,23 +142,20 @@ sap.ui.define([
             var oModel = this.getView().getModel("inspectionModel");
             var sPath = oContext.getPath();
 
-            // Prepare update payload
+            // Prepare update payload for BACKEND call
+            // We use the LOCAL values from viewModel to send to backend
             var oUpdateData = {
-                UnrestrictedQuantity: oContext.getProperty("UnrestrictedQuantity"),
-                BlockedQuantity: oContext.getProperty("BlockedQuantity"),
-                ProductionQuantity: oContext.getProperty("ProductionQuantity"),
-                // Ensure UsageDecisionCode is strictly sent. 
-                // If partial, use current value (likely 'PENDING'); if final, use new decision.
-                UsageDecisionCode: bIsPartial ? oContext.getProperty("UsageDecisionCode") : sDecision
+                UnrestrictedQuantity: oViewModel.getProperty("/UnrestrictedQuantity"),
+                BlockedQuantity: oViewModel.getProperty("/BlockedQuantity"),
+                ProductionQuantity: oViewModel.getProperty("/ProductionQuantity"),
+                UsageDecisionCode: sDecision
             };
 
             oModel.update(sPath, oUpdateData, {
                 success: function () {
-                    MessageToast.show(bIsPartial ? "Record Saved Successfully" : "Decision Saved Successfully");
+                    MessageToast.show("Decision Saved Successfully");
                     this._updateUIState();
-                    if (!bIsPartial) {
-                        this.onNavBack();
-                    }
+                    this.onNavBack();
                 }.bind(this),
                 error: function (oError) {
                     try {
