@@ -31,7 +31,7 @@ server:
         ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - path: /sap
-            url: http://172.17.19.24:8000
+            url: http://AZKTLDS5CP.kcloud.com:8000
             destination: Portal_Project
     - name: sap-fe-mockserver
       beforeMiddleware: csp
