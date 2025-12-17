@@ -1,35 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>App Title</title>
-    <style>
-        html, body, body > div, #container, #container-uiarea {
-            height: 100%;
-        }
-    </style>
+    <title>Quality Portal</title>
     <script
         id="sap-ui-bootstrap"
-        src="resources/sap-ui-core.js"
-        data-sap-ui-theme="sap_horizon"
-        data-sap-ui-resource-roots='{
-            "quality": "./"
+        src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_fiori_3"
+        data-sap-ui-resourceroots='{
+            "com.kaar.qualityportal": "./"
         }'
-        data-sap-ui-on-init="module:sap/ui/core/ComponentSupport"
-        data-sap-ui-compat-version="edge"
+        data-sap-ui-compatVersion="edge"
         data-sap-ui-async="true"
-        data-sap-ui-frame-options="trusted"
-    ></script>
+        data-sap-ui-frameOptions="trusted">
+    </script>
+    <script>
+        sap.ui.getCore().attachInit(function () {
+            new sap.ui.core.ComponentContainer({
+                name: "com.kaar.qualityportal",
+                settings : {
+                    id : "qualityportal"
+                },
+                async: true
+            }).placeAt("content");
+        });
+    </script>
 </head>
-<body class="sapUiBody sapUiSizeCompact" id="content">
-    <div
-        data-sap-ui-component
-        data-name="quality"
-        data-id="container"
-        data-settings='{"id" : "quality"}'
-        data-handle-validation="true"
-    ></div>
+<body class="sapUiBody">
+    <div id="content"></div>
 </body>
 </html>

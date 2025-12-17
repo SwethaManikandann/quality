@@ -1,0 +1,37 @@
+<mvc:View
+    controllerName="com.kaar.qualityportal.controller.Login"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
+    <Page id="loginPage" title="{i18n>appTitle}" showHeader="false" backgroundDesign="Solid">
+        <content>
+            <FlexBox
+                alignItems="Center"
+                justifyContent="Center"
+                height="100%"
+                direction="Column"
+                class="sapUiMediumMargin">
+                <items>
+                    <Panel width="400px" backgroundDesign="Transparent" class="sapUiResponsiveMargin">
+                        <headerToolbar>
+                            <Toolbar height="3rem">
+                                <Title text="{i18n>loginTitle}" level="H2"/>
+                            </Toolbar>
+                        </headerToolbar>
+                        <content>
+                            <VBox class="sapUiSmallMargin">
+                                <Label text="{i18n>usernameConfig}" labelFor="username"/>
+                                <Input id="username" placeholder="Enter Username"/>
+                                <Label text="{i18n>passwordConfig}" labelFor="password" class="sapUiSmallMarginTop"/>
+                                <Input id="password" type="Password" placeholder="Enter Password"/>
+                                <Button text="{i18n>loginButton}" type="Emphasized" press=".onLoginPress" class="sapUiSmallMarginTop" width="100%"/>
+                            </VBox>
+                        </content>
+                    </Panel>
+                </items>
+            </FlexBox>
+        </content>
+    </Page>
+</mvc:View>

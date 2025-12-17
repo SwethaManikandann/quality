@@ -1,0 +1,115 @@
+{
+    "_version": "1.12.0",
+    "sap.app": {
+        "id": "com.kaar.qualityportal",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "1.0.0"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "dataSources": {
+            "loginService": {
+                "uri": "http://AZKTLDS5CP.kcloud.com:8000/sap/opu/odata/sap/ZDD_SM_QP_CDS/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "2.0"
+                }
+            },
+            "inspectionService": {
+                "uri": "http://AZKTLDS5CP.kcloud.com:8000/sap/opu/odata/sap/ZDD_SM_QP_INSPECTION_CDS/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "2.0"
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": false,
+        "rootView": {
+            "viewName": "com.kaar.qualityportal.view.App",
+            "type": "XML",
+            "async": true,
+            "id": "app"
+        },
+        "dependencies": {
+            "minUI5Version": "1.65.6",
+            "libs": {
+                "sap.ui.core": {},
+                "sap.m": {},
+                "sap.ui.layout": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "com.kaar.qualityportal.i18n.i18n"
+                }
+            },
+            "loginModel": {
+                "dataSource": "loginService",
+                "preload": true
+            },
+            "inspectionModel": {
+                "dataSource": "inspectionService",
+                "preload": true
+            }
+        },
+        "routing": {
+            "config": {
+                "routerClass": "sap.m.routing.Router",
+                "viewType": "XML",
+                "async": true,
+                "viewPath": "com.kaar.qualityportal.view",
+                "controlId": "app",
+                "controlAggregation": "pages",
+                "transition": "slide"
+            },
+            "routes": [
+                {
+                    "pattern": "",
+                    "name": "login",
+                    "target": "Login"
+                },
+                {
+                    "pattern": "dashboard",
+                    "name": "dashboard",
+                    "target": "Dashboard"
+                }
+            ],
+            "targets": {
+                "Login": {
+                    "viewName": "Login",
+                    "viewId": "login"
+                },
+                "Dashboard": {
+                    "viewName": "Dashboard",
+                    "viewId": "dashboard"
+                }
+            }
+        }
+    }
+}

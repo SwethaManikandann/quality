@@ -1,0 +1,81 @@
+<mvc:View
+    controllerName="com.kaar.qualityportal.controller.Dashboard"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Page id="dashboardPage" title="{i18n>dashboardTitle}" showNavButton="true" navButtonPress=".onNavBack" backgroundDesign="List">
+        <content>
+            <Table
+                id="inspectionTable"
+                items="{
+                    path: 'inspectionModel>/ZDD_SM_QP_INSPECTION',
+                    sorter: {
+                        path: 'CreatedDate',
+                        descending: true
+                    }
+                }"
+                growing="true"
+                growingThreshold="20"
+                width="auto"
+                class="sapUiResponsiveMargin">
+                <headerToolbar>
+                    <Toolbar>
+                        <Title text="{i18n>dashboardTitle}"/>
+                        <ToolbarSpacer/>
+                        <Button icon="sap-icon://refresh" press=".onRefresh"/>
+                        <Button icon="sap-icon://log" press=".onLogout"/>
+                    </Toolbar>
+                </headerToolbar>
+                <columns>
+                     <Column><Text text="{i18n>inspectionLot}"/></Column>
+                     <Column minScreenWidth="Tablet" demandPopin="true"><Text text="{i18n>material}"/></Column>
+                     <Column minScreenWidth="Tablet" demandPopin="true"><Text text="{i18n>plant}"/></Column>
+                     <Column minScreenWidth="Desktop" demandPopin="true"><Text text="{i18n>inspectionType}"/></Column>
+                     <Column minScreenWidth="Desktop" demandPopin="true"><Text text="{i18n>lotQty}"/></Column>
+                     <Column minScreenWidth="Desktop" demandPopin="true"><Text text="{i18n>uom}"/></Column>
+                     <Column minScreenWidth="Desktop" demandPopin="true"><Text text="{i18n>createdDate}"/></Column>
+                     <Column minScreenWidth="Desktop" demandPopin="true"><Text text="{i18n>startDate}"/></Column>
+                     <Column minScreenWidth="Desktop" demandPopin="true"><Text text="{i18n>endDate}"/></Column>
+                     <Column><Text text="{i18n>ud}"/></Column>
+                     <Column><Text text="{i18n>status}"/></Column>
+                </columns>
+                <items>
+                    <ColumnListItem type="Inactive">
+                        <cells>
+                            <ObjectIdentifier title="{inspectionModel>InspectionLot}"/>
+                            <ObjectIdentifier title="{inspectionModel>MaterialNumber}" text="{inspectionModel>MaterialDesc}"/>
+                            <Text text="{inspectionModel>Plant}"/>
+                            <Text text="{inspectionModel>InspectionType}"/>
+                            <Text text="{inspectionModel>LotQuantity}"/>
+                            <Text text="{inspectionModel>UoM}"/>
+                            <Text text="{
+                                path: 'inspectionModel>CreatedDate',
+                                formatter: '.formatter.date'
+                            }"/>
+                            <Text text="{
+                                path: 'inspectionModel>StartDate',
+                                formatter: '.formatter.date'
+                            }"/>
+                            <Text text="{
+                                path: 'inspectionModel>EndDate',
+                                formatter: '.formatter.date'
+                            }"/>
+                            <Text text="{inspectionModel>UDType}"/>
+                             <ObjectStatus
+                                text="{
+                                    path: 'inspectionModel>UsageDecisionCode',
+                                    formatter: '.formatter.statusText'
+                                }"
+                                state="{
+                                    path: 'inspectionModel>UsageDecisionCode',
+                                    formatter: '.formatter.statusState'
+                                }"
+                                icon="{= ${inspectionModel>UsageDecisionCode} === 'Accepted' ? 'sap-icon://accept' : (${inspectionModel>UsageDecisionCode} === 'Rejected' ? 'sap-icon://decline' : 'sap-icon://pending') }"
+                             />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>
